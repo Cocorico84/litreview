@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container my-3">
+    <div class="row">
+        <div class="col">
+            <div class="card my-3">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Follow another user</h5>
+                    <form class="form-inline" method="get">
+                        <input name="search_user" class="form-control" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-secondary ml-3" type="submit">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card my-3">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Following</h5>
+                    <ul class="list-group list-group-flush">
+                        {% for user in follows %}
+                        <li class="list-group-item">{{ user.user }}
+                            <div class=" d-flex justify-content-end">
+                                <a href="#" class="btn btn-primary ">Unfollow</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card my-3">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Followers</h5>
+                    <ul class="list-group list-group-flush">
+                        {% for user in follows %}
+                        <li class="list-group-item">{{ user.followed_user }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

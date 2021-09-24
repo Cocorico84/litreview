@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container my-3">
+    <div class="row">
+        <div class="col">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="card my-3">
+                    <div class="card-header">
+                        Book / Article
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Title</h5>
+                        {{ ticket_form.title }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Description</h5>
+                        {{ ticket_form.description }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Image</h5>
+                        {{ ticket_form.image }}
+                    </div>
+                </div>
+                <div class="card my-3">
+                    <div class="card-header">
+                        Review
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Title</h5>
+                        {{ review_form.headline }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Rating</h5>
+                        {{ review_form.rating }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Comment</h5>
+                        {{ review_form.body }}
+                    </div>
+                </div>
+
+                <input type="submit">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

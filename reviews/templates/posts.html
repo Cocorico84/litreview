@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 
@@ -21,15 +22,19 @@
                             {{ post.time_created }}
                         </div>
                     </div>
+                    <div>
+                        {{ post.title }}
+                    </div>
                     {{ post.description }}
                     {% if post.image %}
                     <p><img src="{{ post.image.url }}"></p>
                     {% else %}
                     <p></p>
                     {% endif %}
-                    {% include 'ticket.html' %}
+                    {% include 'ticket_button.html' %}
 
                     </p>
+
                     {% elif post.content_type == 'REVIEW' %}
                     <p class="card-text">
                     <div class="row">
@@ -41,14 +46,28 @@
                         </div>
                     </div>
                     <div>
-                        {{ post.headline }} - {{ post.rating }}
+                        {{ post.headline }} -
+                        {% if post.rating == 1 %}
+                        <img src="{% static 'one_star.jpg' %}" alt="one" width="140" height="30"/>
+                        {% elif post.rating == 2 %}
+                        <img src="{% static 'two_stars.jpg' %}" alt="two" width="140" height="30"/>
+                        {% elif post.rating == 3 %}
+                        <img src="{% static 'three_stars.jpg' %}" alt="three" width="140" height="30"/>
+                        {% elif post.rating == 4 %}
+                        <img src="{% static 'four_stars.jpg' %}" alt="four" width="140" height="30" />
+                        {% elif post.rating == 5 %}
+                        <img src="{% static 'five_stars.jpg' %}" alt="five" width="140" height="30"/>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ post.body }}
                     </div>
                     <div>
                         {{ post.ticket }}
                     </div>
-                    {% include 'review.html' %}
-
+                    {% include 'review_button.html' %}
                     </p>
+
                     {% endif %}
                 </div>
                 <div class="container my-3">

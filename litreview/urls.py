@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('reviews/', include('reviews.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/logout', include('django.contrib.auth.urls'), name='logout')
+    path('accounts/logout/', include('django.contrib.auth.urls'), name='logout')
 ]
 
 if settings.DEBUG:

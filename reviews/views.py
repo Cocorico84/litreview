@@ -1,11 +1,12 @@
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 
 from .models import Ticket, Review, UserFollows
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CreateUserForm, TicketForm, ReviewForm
+from .forms import CreateUserForm, TicketForm, ReviewForm, FollowerForm
 from itertools import chain
 from django.db.models import CharField, Value, Q
 
@@ -14,12 +15,21 @@ class ReviewListView(LoginRequiredMixin, ListView):
     model = Review
     template_name = "flow.html"
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super(ReviewListView, self).get_context_data(**kwargs)
         reviews = Review.objects.filter(user=self.request.user).annotate(content_type=Value('REVIEW', CharField()))
         tickets = Ticket.objects.filter(user=self.request.user).annotate(content_type=Value('TICKET', CharField()))
+
+        # followers = UserFollows.objects.filter(user=self.request.user).values_list('followed_user__username')
+        followers = UserFollows.objects.filter(user=self.request.user)
+        my_followers = [follow.followed_user for follow in followers]
+        users = User.objects.filter(username__in=my_followers)
+
+        follower_tickets = Ticket.objects.filter(user__in=users).annotate(content_type=Value('FOLLOWER_TICKET', CharField()))
+        follower_reviews = Review.objects.filter(user__in=users).annotate(content_type=Value('FOLLOWER_REVIEW', CharField()))
+
         context["posts"] = sorted(
-            chain(reviews, tickets),
+            chain(reviews, tickets, follower_tickets, follower_reviews),
             key=lambda post: post.time_created,
             reverse=True
         )
@@ -94,33 +104,42 @@ class TicketUpdateView(LoginRequiredMixin, UpdateView):
     model = Ticket
     fields = ("title", "description", "image",)
     template_name = "update.html"
-    success_url = "/"
+    success_url = reverse_lazy("posts")
 
 
 class TicketDeleteView(LoginRequiredMixin, DeleteView):
     model = Ticket
     template_name = "delete.html"
-    success_url = "/"
+    success_url = reverse_lazy("posts")
 
 
-class AddFollowerView(LoginRequiredMixin, CreateView):
-    model = UserFollows
-    fields = "__all__"
-    template_name = "followers.html"
+class FollowerAddView(LoginRequiredMixin, CreateView):
+    form_class = FollowerForm
+    template_name = "add_follower.html"
+    success_url = reverse_lazy("follower")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        if User.objects.filter(username=form.cleaned_data["followed_user"]).exists():
+            form.instance.followed_user = User.objects.get(username=form.cleaned_data["followed_user"])
+        return super().form_valid(form)
 
 
 class FollowerListView(LoginRequiredMixin, ListView):
     model = UserFollows
     template_name = "followers.html"
-    context_object_name = "follows"
 
-    def get_queryset(self):
-        return UserFollows.objects.filter(Q(user=self.request.user) | Q(followed_user=self.request.user))
+    def get_context_data(self, **kwargs):
+        context = super(FollowerListView, self).get_context_data(**kwargs)
+        context["users"] = UserFollows.objects.filter(followed_user=self.request.user)
+        context["followers"] = UserFollows.objects.filter(user=self.request.user)
+        return context
 
-    # def get(self, request, *args, **kwargs):
-    #     # user = UserFollows.objects.get(user__username__icontains=request.GET.get("search_user"))
-    #     user = UserFollows.objects.filter(user__username__icontains=request.GET.get("search_user"))
-    #     return render(request, self.template_name, {'user': user})
+
+class FollowerDelete(LoginRequiredMixin, DeleteView):
+    model = UserFollows
+    template_name = "delete.html"
+    success_url = reverse_lazy("follower")
 
 
 class PostView(LoginRequiredMixin, ListView):

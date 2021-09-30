@@ -6,11 +6,8 @@
 
 {% block content %}
 <form method="post">
-    <p>
-        Are you sure to delete ?
-    </p>
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Delete">
+    <input type="submit">
 </form>
 {% endblock %}

@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .views import ReviewListView, ReviewDetailView, ReviewCreateView, ReviewUpdateView, ReviewDeleteView, \
-    TicketDetailView, TicketListView, TicketCreateView, TicketUpdateView, TicketDeleteView, CreateUserView, AddFollowerView, FollowerListView, PostView
+    TicketDetailView, TicketListView, TicketCreateView, TicketUpdateView, TicketDeleteView, CreateUserView, \
+    FollowerListView, PostView, FollowerDelete, FollowerAddView
 
 urlpatterns = [
     path('', ReviewListView.as_view(), name='review_list'),
@@ -15,7 +16,8 @@ urlpatterns = [
     path('ticket/<int:pk>/update', TicketUpdateView.as_view(), name='ticket_update'),
     path('ticket/<int:pk>/delete', TicketDeleteView.as_view(), name='ticket_delete'),
     path('create_user', CreateUserView.as_view(), name='create_user'),
-    path('follower/add', AddFollowerView.as_view(), name='add_follower'),
     path('follower', FollowerListView.as_view(), name='follower'),
+    path('follower/add', FollowerAddView.as_view(), name="follower_add"),
+    path('follower/<int:pk>/delete', FollowerDelete.as_view(), name="follower_delete"),
     path('posts', PostView.as_view(), name='posts')
 ]

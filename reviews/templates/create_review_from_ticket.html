@@ -5,5 +5,49 @@
 {% endblock %}
 
 {% block content %}
+<div class="container my-3">
+    <div class="row">
+        <div class="col">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="card my-3">
+                    <div class="card-header">
+                        You are answering to
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Title</h5>
+                        {{ ticket.title }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Description</h5>
+                        {{ ticket.description }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Image</h5>
+                        {{ ticket.image }}
+                    </div>
+                </div>
+                <div class="card my-3">
+                    <div class="card-header">
+                        Review
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Title</h5>
+                        {{ form.headline }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Rating</h5>
+                        {{ form.rating }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Comment</h5>
+                        {{ form.body }}
+                    </div>
+                </div>
 
+                <input type="submit">
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -54,7 +54,7 @@
                         {% elif post.rating == 3 %}
                         <img src="{% static 'three_stars.jpg' %}" alt="three" width="140" height="30"/>
                         {% elif post.rating == 4 %}
-                        <img src="{% static 'four_stars.jpg' %}" alt="four" width="140" height="30" />
+                        <img src="{% static 'four_stars.jpg' %}" alt="four" width="140" height="30"/>
                         {% elif post.rating == 5 %}
                         <img src="{% static 'five_stars.jpg' %}" alt="five" width="140" height="30"/>
                         {% endif %}
@@ -62,8 +62,30 @@
                     <div>
                         {{ post.body }}
                     </div>
-                    <div>
-                        {{ post.ticket }}
+                    <div class="card my-3 px-3 py-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Ticket - {{ post.ticket.user.username }}</h5>
+
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {{ post.ticket.title }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {{ post.ticket.description }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {% if post.ticket.image %}
+                                <p><img src="{{ post.ticket.image.url }}"></p>
+                                {% else %}
+                                <p></p>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                     {% include 'review_button.html' %}
                     </p>

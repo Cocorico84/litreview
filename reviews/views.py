@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
@@ -25,8 +26,10 @@ class ReviewListView(LoginRequiredMixin, ListView):
         my_followers = [follow.followed_user for follow in followers]
         users = User.objects.filter(username__in=my_followers)
 
-        follower_tickets = Ticket.objects.filter(user__in=users).annotate(content_type=Value('FOLLOWER_TICKET', CharField()))
-        follower_reviews = Review.objects.filter(user__in=users).annotate(content_type=Value('FOLLOWER_REVIEW', CharField()))
+        follower_tickets = Ticket.objects.filter(user__in=users).annotate(
+            content_type=Value('FOLLOWER_TICKET', CharField()))
+        follower_reviews = Review.objects.filter(user__in=users).annotate(
+            content_type=Value('FOLLOWER_REVIEW', CharField()))
 
         context["posts"] = sorted(
             chain(reviews, tickets, follower_tickets, follower_reviews),
@@ -34,11 +37,6 @@ class ReviewListView(LoginRequiredMixin, ListView):
             reverse=True
         )
         return context
-
-
-class ReviewDetailView(LoginRequiredMixin, DetailView):
-    model = Review
-    template_name = "example.html"
 
 
 class ReviewCreateView(LoginRequiredMixin, CreateView):
@@ -69,6 +67,23 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
         return HttpResponseRedirect('/')
 
 
+class ReviewFromPostCreateView(LoginRequiredMixin, CreateView):
+    model = Review
+    fields = ("headline", "body", "rating",)
+    template_name = "create_review_from_ticket.html"
+    success_url = reverse_lazy("review_list")
+
+    def get_context_data(self, **kwargs):
+        context = super(ReviewFromPostCreateView, self).get_context_data(**kwargs)
+        context["ticket"] = Ticket.objects.get(id=self.kwargs['pk'])
+        return context
+
+    def form_valid(self, form):
+        form.instance.ticket = get_object_or_404(Ticket, pk=self.kwargs['pk'])
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
 class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     model = Review
     fields = ("headline", "body", "rating",)
@@ -80,14 +95,6 @@ class ReviewDeleteView(LoginRequiredMixin, DeleteView):
     model = Review
     template_name = "delete.html"
     success_url = reverse_lazy("review_list")
-
-
-class TicketListView(LoginRequiredMixin, ListView):
-    model = Ticket
-
-
-class TicketDetailView(LoginRequiredMixin, DetailView):
-    model = Ticket
 
 
 class TicketCreateView(LoginRequiredMixin, CreateView):
@@ -113,21 +120,16 @@ class TicketDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("posts")
 
 
-class FollowerAddView(LoginRequiredMixin, CreateView):
+class FollowerListView(LoginRequiredMixin, CreateView):
     form_class = FollowerForm
-    template_name = "add_follower.html"
+    model = UserFollows
+    template_name = "followers.html"
     success_url = reverse_lazy("follower")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        if User.objects.filter(username=form.cleaned_data["followed_user"]).exists():
-            form.instance.followed_user = User.objects.get(username=form.cleaned_data["followed_user"])
+        form.instance.followed_user = User.objects.get(username=form.cleaned_data["followed_user"])
         return super().form_valid(form)
-
-
-class FollowerListView(LoginRequiredMixin, ListView):
-    model = UserFollows
-    template_name = "followers.html"
 
     def get_context_data(self, **kwargs):
         context = super(FollowerListView, self).get_context_data(**kwargs)

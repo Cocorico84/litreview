@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.forms import ModelForm, RadioSelect, TextInput, Form, CharField
+from django.forms import ModelForm, RadioSelect, CharField
 from .models import Ticket, Review, UserFollows
 
 
@@ -41,3 +41,9 @@ class FollowerForm(ModelForm):
     class Meta:
         model = UserFollows
         exclude = ("followed_user", "user")
+
+    def clean_followed_user(self):
+        cleaned_data = super(FollowerForm, self).clean()
+        if not User.objects.filter(username=cleaned_data["followed_user"]).exists():
+            raise ValidationError("This user doesn't exist")
+        return cleaned_data["followed_user"]

@@ -5,11 +5,11 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 
 from .models import Ticket, Review, UserFollows
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CreateUserForm, TicketForm, ReviewForm, FollowerForm
 from itertools import chain
-from django.db.models import CharField, Value, Q
+from django.db.models import CharField, Value
 
 
 class ReviewListView(LoginRequiredMixin, ListView):
@@ -21,7 +21,6 @@ class ReviewListView(LoginRequiredMixin, ListView):
         reviews = Review.objects.filter(user=self.request.user).annotate(content_type=Value('REVIEW', CharField()))
         tickets = Ticket.objects.filter(user=self.request.user).annotate(content_type=Value('TICKET', CharField()))
 
-        # followers = UserFollows.objects.filter(user=self.request.user).values_list('followed_user__username')
         followers = UserFollows.objects.filter(user=self.request.user)
         my_followers = [follow.followed_user for follow in followers]
         users = User.objects.filter(username__in=my_followers)
@@ -68,8 +67,7 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
 
 
 class ReviewFromPostCreateView(LoginRequiredMixin, CreateView):
-    model = Review
-    fields = ("headline", "body", "rating",)
+    form_class = ReviewForm
     template_name = "create_review_from_ticket.html"
     success_url = reverse_lazy("review_list")
 
@@ -86,7 +84,7 @@ class ReviewFromPostCreateView(LoginRequiredMixin, CreateView):
 
 class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     model = Review
-    fields = ("headline", "body", "rating",)
+    form_class = ReviewForm
     template_name = "update.html"
     success_url = reverse_lazy("review_list")
 
@@ -167,4 +165,4 @@ class PostView(LoginRequiredMixin, ListView):
 class CreateUserView(CreateView):
     form_class = CreateUserForm
     template_name = 'registration.html'
-    success_url = '/'
+    success_url = reverse_lazy("review_list")

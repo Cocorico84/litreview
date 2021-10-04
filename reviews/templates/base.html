@@ -19,7 +19,6 @@
     <div class="container">
         <div class="row">
             <nav class="col navbar navbar-expand-lg navbar-dark">
-<!--                <img src="images/logo.png" width="40" height="30" alt="Site logo">-->
                 <a class="navbar-brand mx-auto">LITReview</a>
 
                 <button
@@ -46,7 +45,7 @@
                                 <a class="nav-link" href="{% url 'follower' %}">Followers</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                                <a class="nav-link" href="{% url 'logout' %}?next={% url 'login' %}">Logout</a>
                             </li>
                         </ul>
                     </div>

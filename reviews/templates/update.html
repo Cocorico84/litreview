@@ -1,12 +1,20 @@
 {% extends 'base.html' %}
 
 {% block title %}
-
+Update
 {% endblock %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Update">
-</form>
+<div class="container my-3">
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Update">
+            </form>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}

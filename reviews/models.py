@@ -5,6 +5,9 @@ from PIL import Image
 
 
 class Ticket(models.Model):
+    """
+    A ticket is a request of a review from a user.
+    """
     title = models.CharField(max_length=128)
     description = models.TextField(max_length=2048, blank=True)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -15,6 +18,9 @@ class Ticket(models.Model):
         return self.title
 
     def save(self):
+        """
+        If there is an image, the method will resize it to not have a too large image.
+        """
         super().save()
         if self.image:
             img = Image.open(self.image.path)
@@ -26,6 +32,9 @@ class Ticket(models.Model):
 
 
 class Review(models.Model):
+    """
+    A review is linked to a ticket. And a user can review his own ticket.
+    """
     ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE, related_name='reviews')
     rating = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(0), MaxValueValidator(5)])
@@ -37,6 +46,9 @@ class Review(models.Model):
 
 
 class UserFollows(models.Model):
+    """
+    A user can follow other people for their tickets or reviews and he can be followed.
+    """
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='following')
     followed_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                       related_name='followed_by')

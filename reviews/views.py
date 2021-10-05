@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
@@ -17,6 +16,9 @@ class ReviewListView(LoginRequiredMixin, ListView):
     template_name = "flow.html"
 
     def get_context_data(self, **kwargs):
+        """
+        The flow displays tickets and reviews from the user but also those who is following.
+        """
         context = super(ReviewListView, self).get_context_data(**kwargs)
         reviews = Review.objects.filter(user=self.request.user).annotate(content_type=Value('REVIEW', CharField()))
         tickets = Ticket.objects.filter(user=self.request.user).annotate(content_type=Value('TICKET', CharField()))
@@ -49,6 +51,9 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
         return render(request, self.template_name, {'review_form': review_form, 'ticket_form': ticket_form})
 
     def post(self, request, *args, **kwargs):
+        """
+        This POST method allows the user to create a review and a ticket in once.
+        """
         review_form = ReviewForm(request.POST)
         ticket_form = TicketForm(request.POST)
         ticket_form.instance.user = self.request.user
@@ -63,10 +68,13 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
                 return render(request, self.template_name, {'review_form': review_form, 'ticket_form': ticket_form})
         else:
             return render(request, self.template_name, {'review_form': review_form, 'ticket_form': ticket_form})
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(reverse_lazy("review_list"))
 
 
 class ReviewFromPostCreateView(LoginRequiredMixin, CreateView):
+    """
+    A review can be created from an existing ticket. This ticket can be the same user or another user.
+    """
     form_class = ReviewForm
     template_name = "create_review_from_ticket.html"
     success_url = reverse_lazy("review_list")
@@ -77,6 +85,9 @@ class ReviewFromPostCreateView(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
+        """
+        To complete the form, we have to give the ticket which the user has clicked on it adn the user himself.
+        """
         form.instance.ticket = get_object_or_404(Ticket, pk=self.kwargs['pk'])
         form.instance.user = self.request.user
         return super().form_valid(form)
@@ -98,7 +109,7 @@ class ReviewDeleteView(LoginRequiredMixin, DeleteView):
 class TicketCreateView(LoginRequiredMixin, CreateView):
     form_class = TicketForm
     template_name = "create_ticket.html"
-    success_url = '/'
+    success_url = reverse_lazy("review_list")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -130,6 +141,9 @@ class FollowerListView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
+        """
+        The template should display only followed users and following users by the authenticated user.
+        """
         context = super(FollowerListView, self).get_context_data(**kwargs)
         context["users"] = UserFollows.objects.filter(followed_user=self.request.user)
         context["followers"] = UserFollows.objects.filter(user=self.request.user)
@@ -150,7 +164,7 @@ class PostView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Ticket.objects.filter(user=self.request.user)
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super(PostView, self).get_context_data(**kwargs)
         reviews = Review.objects.filter(user=self.request.user).annotate(content_type=Value('REVIEW', CharField()))
         tickets = Ticket.objects.filter(user=self.request.user).annotate(content_type=Value('TICKET', CharField()))
@@ -163,6 +177,9 @@ class PostView(LoginRequiredMixin, ListView):
 
 
 class CreateUserView(CreateView):
+    """
+    This view is to create new users.
+    """
     form_class = CreateUserForm
     template_name = 'registration.html'
     success_url = reverse_lazy("review_list")

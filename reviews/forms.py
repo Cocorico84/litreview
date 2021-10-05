@@ -16,6 +16,9 @@ class CreateUserForm(UserCreationForm):
         return reverse_lazy('create_user')
 
     def form_valid(self, form):
+        """
+        The form is valid only if the user put the same password twice during the creation of his account.
+        """
         if form.cleaned_data['password1'] == form.cleaned_data['password2']:
             User.objects.create_user(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
         return HttpResponseRedirect(reverse_lazy("create_user"))
@@ -43,6 +46,9 @@ class FollowerForm(ModelForm):
         exclude = ("followed_user", "user")
 
     def clean_followed_user(self):
+        """
+        In the input area, a checking is made to know if the user exists. It accepts only if the user is well written.
+        """
         cleaned_data = super(FollowerForm, self).clean()
         if not User.objects.filter(username=cleaned_data["followed_user"]).exists():
             raise ValidationError("This user doesn't exist")

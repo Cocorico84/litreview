@@ -28,142 +28,18 @@ Flow
             <div class="card">
                 <div class="card-body">
                     {% if post.content_type == 'TICKET' %}
-                    <p class="card-text">
-                    <div class="row">
-                        <div class="col-6">
-                            You have posted a ticket
-                        </div>
-                        <div class="col-6 text-right">
-                            {{ post.time_created }}
-                        </div>
-                    </div>
-                    <div>
-                        {{ post.title }}
-                    </div>
-                    {{ post.description }}
-                    {% if post.image %}
-                    <p><img src="{{ post.image.url }}"></p>
-                    {% else %}
-                    <p></p>
-                    {% endif %}
+                    {% include 'snippets/ticket.html' with post=post %}
                     {% include 'ticket_button.html' %}
-                    </p>
 
                     {% elif post.content_type == 'FOLLOWER_TICKET' %}
-                    <p class="card-text">
-                    <div class="row">
-                        <div class="col-6">
-                            {{ post.user.username }} have posted a ticket
-                        </div>
-                        <div class="col-6 text-right">
-                            {{ post.time_created }}
-                        </div>
-                    </div>
-                    <div>
-                        {{ post.title }}
-                    </div>
-                    {{ post.description }}
-                    {% if not post.reviews.all %}
-                    <div class="col text-right">
-                        <a class="btn btn-outline-secondary" href="{% url 'review_create_from_ticket' post.id %}">
-                            Create a review
-                        </a>
-                    </div>
-                    {% endif %}
-                    {% if post.image %}
-                    <p><img src="{{ post.image.url }}"></p>
-                    {% else %}
-                    <p></p>
-                    {% endif %}
-                    </p>
+                    {% include 'snippets/ticket.html' with post=post %}
 
                     {% elif post.content_type == 'REVIEW' %}
-                    <p class="card-text">
-                    <div class="row">
-                        <div class="col-6">
-                            You have posted a review
-                        </div>
-                        <div class="col-6 text-right">
-                            {{ post.time_created }}
-                        </div>
-                    </div>
-                    <div>
-                        {{ post.headline }} -
-                        {% if post.rating == 1 %}
-                        <img src="{% static 'one_star.jpg' %}" alt="one" width="140" height="30"/>
-                        {% elif post.rating == 2 %}
-                        <img src="{% static 'two_stars.jpg' %}" alt="two" width="140" height="30"/>
-                        {% elif post.rating == 3 %}
-                        <img src="{% static 'three_stars.jpg' %}" alt="three" width="140" height="30"/>
-                        {% elif post.rating == 4 %}
-                        <img src="{% static 'four_stars.jpg' %}" alt="four" width="140" height="30"/>
-                        {% elif post.rating == 5 %}
-                        <img src="{% static 'five_stars.jpg' %}" alt="five" width="140" height="30"/>
-                        {% endif %}
-                    </div>
-                    <div>
-                        {{ post.body }}
-                    </div>
-                    <div class="card my-3 px-3 py-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Ticket - {{ post.user.username }}</h5>
-
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                {{ post.ticket.title }}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                {{ post.ticket.description }}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                {% if post.ticket.image %}
-                                <p><img src="{{ post.ticket.image.url }}"></p>
-                                {% else %}
-                                <p></p>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    {% include 'review_button.html' %}
-                    </p>
+                    {% include 'snippets/review.html' with post=post%}
+                    {% include 'review_button.html' with post=post %}
 
                     {% elif post.content_type == 'FOLLOWER_REVIEW' %}
-                    <p class="card-text">
-                    <div class="row">
-                        <div class="col-6">
-                            {{ post.user.username }} have posted a review
-                        </div>
-                        <div class="col-6 text-right">
-                            {{ post.time_created }}
-                        </div>
-                    </div>
-                    <div>
-                        {{ post.headline }} -
-                        {% if post.rating == 1 %}
-                        <img src="{% static 'one_star.jpg' %}" alt="one" width="140" height="30"/>
-                        {% elif post.rating == 2 %}
-                        <img src="{% static 'two_stars.jpg' %}" alt="two" width="140" height="30"/>
-                        {% elif post.rating == 3 %}
-                        <img src="{% static 'three_stars.jpg' %}" alt="three" width="140" height="30"/>
-                        {% elif post.rating == 4 %}
-                        <img src="{% static 'four_stars.jpg' %}" alt="four" width="140" height="30"/>
-                        {% elif post.rating == 5 %}
-                        <img src="{% static 'five_stars.jpg' %}" alt="five" width="140" height="30"/>
-                        {% endif %}
-                    </div>
-                    <div>
-                        {{ post.body }}
-                    </div>
-                    <div>
-                        {{ post.ticket }}
-                    </div>
-
-                    </p>
+                    {% include 'snippets/review.html' with post=post%}
 
                     {% endif %}
                 </div>

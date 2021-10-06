@@ -1,0 +1,26 @@
+<p class="card-text">
+<div class="row">
+    <div class="col-6">
+        {{ post.user.username }} have posted a ticket
+    </div>
+    <div class="col-6 text-right">
+        {{ post.time_created }}
+    </div>
+</div>
+<div>
+    {{ post.title }}
+</div>
+{{ post.description }}
+{% if not post.reviews.all %}
+<div class="col text-right">
+    <a class="btn btn-outline-secondary" href="{% url 'review_create_from_ticket' post.id %}">
+        Create a review
+    </a>
+</div>
+{% endif %}
+{% if post.image %}
+<p><img src="{{ post.image.url }}"></p>
+{% else %}
+<p></p>
+{% endif %}
+</p>

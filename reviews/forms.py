@@ -15,14 +15,6 @@ class CreateUserForm(UserCreationForm):
     def get_success_url(self):
         return reverse_lazy('create_user')
 
-    def form_valid(self, form):
-        """
-        The form is valid only if the user put the same password twice during the creation of his account.
-        """
-        if form.cleaned_data['password1'] == form.cleaned_data['password2']:
-            User.objects.create_user(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
-        return HttpResponseRedirect(reverse_lazy("create_user"))
-
 
 class TicketForm(ModelForm):
     class Meta:

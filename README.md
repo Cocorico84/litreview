@@ -27,12 +27,19 @@ pip install -r requirements.txt
 
 # Quickstart
 
+To create a superuser:
+```console
+python manage.py createsuperuser
+```
+This will allow you to connect to the admin panel.
+
 To see the website in local, run this command :
 
 ```console
 python manage.py runserver
 ```
 When you launch this command, it will start the website on http://127.0.0.1:8000.
+You can create a user or you can login if you have already created one.
 
 # Contributor
 

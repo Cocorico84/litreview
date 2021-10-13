@@ -1,5 +1,3 @@
-https://img.shields.io/circleci/build/github/cocorico84/litreview?token=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
-
 # Description
 
 LitReview is a platform to create reviews on books and ask reviews if you want some reviews on a specific book.

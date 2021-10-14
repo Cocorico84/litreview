@@ -10,6 +10,8 @@ Python 3
 
 # Installation
 
+To clone the repository, you can download the zip or clone either HTTPS or SSH. And when you are in the repository you can activate your virtual environement.
+
 On Linux or Mac
 ```console
 pip install virtualenv
@@ -40,6 +42,20 @@ python manage.py runserver
 ```
 When you launch this command, it will start the website on http://127.0.0.1:8000.
 You can create a user or you can login if you have already created one.
+
+You can also create users from shell:
+```
+python manage.py shell
+User.objects.create_user('foo', password='bar')
+```
+If you want to give some permissions:
+```
+python manage.py shell
+user = User.objects.create_user('foo', password='bar')
+user.is_superuser=True
+user.is_staff=True
+user.save()
+```
 
 # Contributor
 

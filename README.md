@@ -1,6 +1,6 @@
-[![forthebadge](https://forthebadge.com/images/badges/cc-0.svg)]
-[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)]
-[![forthebadge](https://forthebadge.com/images/badges/uses-html.svg)]
+[forthebadge](https://forthebadge.com/images/badges/cc-0.svg)
+[forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)
+[forthebadge](https://forthebadge.com/images/badges/uses-html.svg)
 
 # Description
 

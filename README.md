@@ -50,11 +50,13 @@ You can create a user or you can login if you have already created one.
 You can also create users from shell:
 ```py
 python manage.py shell
+from django.contrib.auth.models import User
 User.objects.create_user('foo', password='bar')
 ```
 If you want to give some permissions:
 ```py
 python manage.py shell
+from django.contrib.auth.models import User
 user = User.objects.create_user('foo', password='bar')
 user.is_superuser=True
 user.is_staff=True

@@ -1,3 +1,7 @@
+[![forthebadge](https://forthebadge.com/images/badges/cc-0.svg)](https://forthebadge.com) 
+[![forthebadge](https://forthebadge.com/images/badges/made-with-django.svg)](https://forthebadge.com) 
+[![forthebadge](https://forthebadge.com/images/badges/uses-python.svg)](https://forthebadge.com)
+
 # Description
 
 LitReview is a platform to create reviews on books and ask reviews if you want some reviews on a specific book.

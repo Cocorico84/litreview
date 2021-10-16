@@ -65,4 +65,4 @@ user.save()
 
 # Contributor
 
-If you have any suggestions to improve the chess manager, you can create an issue.
+If you have any suggestions to improve the project, you can create an issue.

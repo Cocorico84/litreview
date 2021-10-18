@@ -6,7 +6,7 @@
 
 LitReview is a platform to create reviews on books and ask reviews if you want some reviews on a specific book.
 
-Additionally, you can create a community by following other people et be followed.
+Additionally, you can create a community by following other people and be followed.
 
 # Prerequisites
 
